@@ -11,7 +11,7 @@ namespace UserManagement.Application.Interfaces
     {
         Task<List<User>> GetUsersAsync();
 
-        Task<User> GetUserByIdAsync(int id);
+        Task<User?> GetUserByIdAsync(int id);
         Task<int> CreateUserAsync(User user);
     }
 }

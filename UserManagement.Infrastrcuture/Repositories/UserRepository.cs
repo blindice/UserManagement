@@ -26,9 +26,9 @@ namespace UserManagement.Infrastrcuture.Repositories
             return user.Id;
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
-            return await _context.Users.FirstAsync(u => u.Id == id);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<List<User>> GetUsersAsync()

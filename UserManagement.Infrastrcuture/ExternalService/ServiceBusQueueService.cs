@@ -12,17 +12,16 @@ namespace UserManagement.Infrastrcuture.ExternalService
 {
     public sealed class ServiceBusQueueService : IServiceBusQueueService
     {
-        readonly IConfiguration _config;
+        readonly ServiceBusClient _client;
 
-        public ServiceBusQueueService(IConfiguration config)
+        public ServiceBusQueueService(ServiceBusClient client)
         {
-            _config = config;
+            _client = client;
         }
 
         public async Task SendMessageToQueue<T>(T data, string queueName)
         {
-            var client = new ServiceBusClient("Endpoint=sb://ludwigsb.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=2r8lxe4pFGnemHbdLn88gdPiDAmx2sTIp+ASbKGx8j0=");
-            var sender = client.CreateSender(queueName);
+            var sender = _client.CreateSender(queueName);
             var body = JsonSerializer.Serialize(data);
             var message = new ServiceBusMessage(body);
             await sender.SendMessageAsync(message);

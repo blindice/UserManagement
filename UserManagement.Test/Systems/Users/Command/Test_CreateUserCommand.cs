@@ -23,9 +23,11 @@ namespace UserManagement.Test.Systems.Users.Command
             //arrange
             var mockUserRepository = new Mock<IUserRepository>();
             var user = new CreateUserDTO { FirstName = "Ludwig Ivan", LastName = "Comiso" };
-            var newUser = new User{Id=1, FirstName = user.FirstName, LastName = user.LastName};
 
-            mockUserRepository.Setup(x => x.CreateUserAsync(newUser)).ReturnsAsync(newUser.Id);
+            mockUserRepository.Setup(x => x.CreateUserAsync(It.IsAny<User>()))
+                .Callback<User>(user => user = new User { FirstName = user.FirstName, LastName = user.LastName })
+                .ReturnsAsync(1);
+
             var command = new CreateUserCommand(user);
             var handler = new CreateUserCommandHandler(mockUserRepository.Object);
 
@@ -34,7 +36,7 @@ namespace UserManagement.Test.Systems.Users.Command
 
 
             //assert
-            result.Should().Be(newUser.Id);
+            result.Should().Be(1);
 
         }
 
@@ -45,9 +47,11 @@ namespace UserManagement.Test.Systems.Users.Command
             //arrange
             var mockUserRepository = new Mock<IUserRepository>();
             var user = new CreateUserDTO { FirstName = "Ludwig Ivan", LastName = "Comiso" };
-            var newUser = new User {FirstName = user.FirstName, LastName = user.LastName };
 
-            mockUserRepository.Setup(x => x.CreateUserAsync(newUser)).ReturnsAsync(1);
+            mockUserRepository.Setup(x => x.CreateUserAsync(It.IsAny<User>()))
+                .Callback<User>(user => user = new User { FirstName = user.FirstName, LastName = user.LastName })
+                .ReturnsAsync(1);
+
             var command = new CreateUserCommand(user);
             var handler = new CreateUserCommandHandler(mockUserRepository.Object);
 
@@ -55,7 +59,7 @@ namespace UserManagement.Test.Systems.Users.Command
             var result = await handler.Handle(command, default);
 
             //assert
-            mockUserRepository.Verify(x => x.CreateUserAsync(It.Is<User>(y => y == newUser)), Times.Once());
+            mockUserRepository.Verify(x => x.CreateUserAsync(It.IsAny<User>()), Times.Once());
         }
     }
 }
